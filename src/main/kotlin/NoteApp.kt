@@ -32,7 +32,7 @@ class NoteApp {
         menu.showItemMenu(
             title = "Архив: ${archive.name}",
             items = archive.notes,
-            displayItem = { "Заметка ${archive.notes.indexOf(it) + 1}" },
+            displayItem = { it.name },
             createItem = { createNote(archive) },
             onSelect = { showNote(it) },
             onBack = { showArchivesMenu() },
@@ -42,12 +42,13 @@ class NoteApp {
     }
 
     private fun showNote(note: Note) {
-        println("\n-= Содержание заметки =-")
+        println("\n-= ${note.name} =-")
         println(note.content)
         menu.waitForEnter()
     }
 
     private fun createArchive(): Archive? {
+        //
         val name = menu.readNonEmptyString(
             "Введите название архива: ",
             "Название не может быть пустым."
@@ -60,14 +61,19 @@ class NoteApp {
     }
 
     private fun createNote(archive: Archive): Note? {
+        val name = menu.readNonEmptyString(
+            "Введите название заметки: ",
+            "Название не может быть пустым."
+        ) ?: return null
+
         val content = menu.readString(
             "Введите текст заметки: ",
             "Текст заметки не может быть пустым."
         ) ?: return null
 
-        val note = Note(content)
+        val note = Note(name, content)
         archive.notes.add(note)
-        println("Заметка создана.")
+        println("Заметка '$name' создана.")
         return note
     }
 }
